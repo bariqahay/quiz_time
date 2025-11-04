@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/question.dart';
 import '../widgets/answer_option.dart';
+import '../widgets/question_map.dart';
 import '../widgets/progress_indicator.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -105,6 +106,7 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -143,6 +145,20 @@ class _QuizScreenState extends State<QuizScreen> {
                 totalQuestions: _questions.length,
               ),
               const SizedBox(height: 20),
+
+              // Peta Soal
+              QuestionMap(
+                currentIndex: _currentQuestionIndex,
+                userAnswers: _userAnswers,
+                doubtQuestions: _doubtQuestions,
+                totalQuestions: _questions.length,
+                onTap: (index) {
+                  setState(() {
+                    _currentQuestionIndex = index;
+                    _selectedAnswerIndex = _userAnswers[index];
+                  });
+                },
+              ),
 
               const SizedBox(height: 20),
 
