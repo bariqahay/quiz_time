@@ -2,9 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/question.dart';
 import '../widgets/answer_option.dart';
-import '../widgets/question_map.dart';
 import '../widgets/progress_indicator.dart';
-import 'result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   final String userName;
@@ -52,7 +50,6 @@ class _QuizScreenState extends State<QuizScreen> {
         setState(() => _remainingTime--);
       } else {
         timer.cancel();
-        _finishQuiz();
       }
     });
   }
@@ -96,7 +93,6 @@ class _QuizScreenState extends State<QuizScreen> {
         _selectedAnswerIndex = _userAnswers[_currentQuestionIndex];
       });
     } else {
-      _finishQuiz();
     }
   }
 
@@ -107,28 +103,6 @@ class _QuizScreenState extends State<QuizScreen> {
         _selectedAnswerIndex = _userAnswers[_currentQuestionIndex];
       });
     }
-  }
-
-  void _finishQuiz() {
-    _quizTimer?.cancel();
-
-    int score = 0;
-    for (int i = 0; i < _questions.length; i++) {
-      if (_userAnswers[i] == _questions[i].correctAnswerIndex) score++;
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultScreen(
-          userName: widget.userName,
-          score: score,
-          totalQuestions: _questions.length,
-          userAnswers: _userAnswers,
-          questions: _questions,
-        ),
-      ),
-    );
   }
 
   @override
@@ -164,21 +138,11 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
-
-              // Peta Soal
-              QuestionMap(
-                currentIndex: _currentQuestionIndex,
-                userAnswers: _userAnswers,
-                doubtQuestions: _doubtQuestions,
+              QuizProgressIndicator(
+                currentQuestion: _currentQuestionIndex + 1,
                 totalQuestions: _questions.length,
-                onTap: (index) {
-                  setState(() {
-                    _currentQuestionIndex = index;
-                    _selectedAnswerIndex = _userAnswers[index];
-                  });
-                },
               ),
+              const SizedBox(height: 20),
 
               const SizedBox(height: 20),
 
