@@ -4,6 +4,7 @@ import '../models/question.dart';
 import '../widgets/answer_option.dart';
 import '../widgets/question_map.dart';
 import '../widgets/progress_indicator.dart';
+import 'result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   final String userName;
@@ -51,6 +52,7 @@ class _QuizScreenState extends State<QuizScreen> {
         setState(() => _remainingTime--);
       } else {
         timer.cancel();
+        _finishQuiz();
       }
     });
   }
@@ -94,6 +96,7 @@ class _QuizScreenState extends State<QuizScreen> {
         _selectedAnswerIndex = _userAnswers[_currentQuestionIndex];
       });
     } else {
+      _finishQuiz();
     }
   }
 
@@ -106,6 +109,27 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
+  void _finishQuiz() {
+    _quizTimer?.cancel();
+
+    int score = 0;
+    for (int i = 0; i < _questions.length; i++) {
+      if (_userAnswers[i] == _questions[i].correctAnswerIndex) score++;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultScreen(
+          userName: widget.userName,
+          score: score,
+          totalQuestions: _questions.length,
+          userAnswers: _userAnswers,
+          questions: _questions,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
